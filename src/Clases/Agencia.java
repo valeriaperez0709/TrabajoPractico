@@ -33,11 +33,21 @@ public class Agencia implements Serializable {
         }
     }
 
-    public void agregarModelo(Modelo m) {
-        if (numModelos < modelos.length) {
-            modelos[numModelos] = m;
-            numModelos++;
+    public void agregarModelo(Modelo m) throws DatoInvalido, Duplicado, CapacidadMaxima {
+
+        if (m == null) {
+            throw new DatoInvalido("El modelo no puede ser null");
         }
+
+        if (buscarModeloPorCodigo(m.getCodigoModelo()) != null) {
+            throw new Duplicado("Ya existe un modelo con ese código");
+        }
+
+        if (numModelos >= modelos.length) {
+            throw new CapacidadMaxima("No hay espacio para más modelos");
+        }
+        modelos[numModelos++] = m;
+
     }
 
     public Modelo buscarModeloPorCodigo(int codigo) {
