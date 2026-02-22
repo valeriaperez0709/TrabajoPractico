@@ -83,14 +83,14 @@ public class Agencia implements Serializable {
             throw new DatoInvalido("El fotografo no puede ser null");
         }
 
-        if (buscarModeloPorCodigo(f.getCodigoFotografo()) != null) {
+        if (buscarFotografoPorCodigo(f.getCodigoFotografo()) != null) {
             throw new Duplicado("Ya existe un fotografo con ese código");
         }
 
-        if (numModelos >= modelos.length) {
+        if (numFotografos >= fotografos.length) {
             throw new CapacidadMaxima("No hay espacio para más fotografos");
         }
-            numFotografos++;
+        fotografos[numFotografos++] = f;
 
     }
 
@@ -122,11 +122,19 @@ public class Agencia implements Serializable {
         return null;
     }
 
-    public void agregarEventos(Evento e) {
-        if (numEventos < eventos.length) {
-            eventos[numEventos] = e;
-            numEventos++;
+    public void agregarEventos(Evento e) throws DatoInvalido, Duplicado, CapacidadMaxima {
+        if (e == null) {
+            throw new DatoInvalido("El evento no puede ser null");
         }
+
+        if (buscarEventoPorNombre(e.getNombreDeEvento()) != null) {
+            throw new Duplicado("Ya existe un evento con ese nombre");
+        }
+
+        if (numEventos>= eventos.length) {
+            throw new CapacidadMaxima("No hay espacio para más eventos");
+        }
+        eventos[numEventos++] = e;
     }
 
     public void eliminarEvento(Evento e) throws ValorInexistente, DatoInvalido{
