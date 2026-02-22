@@ -20,9 +20,12 @@ public class Agencia implements Serializable {
         numEventos = 0;
     }
 
-    public void eliminarModelo(Modelo m) {
+    public void eliminarModelo(Modelo m) throws ValorInexistente, DatoInvalido {
+        if (m == null) {
+            throw new DatoInvalido("El modelo no puede ser null");
+        }
         for (int i = 0; i < numModelos; i++) {
-            if (modelos[i] != null && modelos[i].equals(m)) {
+            if ( modelos[i].equals(m)) {
                 for (int j = i; j < numModelos - 1; j++) {
                     modelos[j] = modelos[j + 1];
                 }
@@ -31,6 +34,7 @@ public class Agencia implements Serializable {
                 return;
             }
         }
+        throw new ValorInexistente("Modelo no encontrado");
     }
 
     public void agregarModelo(Modelo m) throws DatoInvalido, Duplicado, CapacidadMaxima {
