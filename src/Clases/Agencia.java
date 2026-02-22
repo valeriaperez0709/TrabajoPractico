@@ -1,0 +1,137 @@
+package Clases;
+
+import java.io.Serializable;
+
+public class Agencia implements Serializable {
+    private Fotografo[] fotografos;
+    private Modelo[] modelos;
+    private Evento[] eventos;
+    private int numFotografos;
+    private int numEventos;
+    private int numModelos;
+
+    public Agencia(int maxFotografos, int maxModelos, int maxEventos) {
+        fotografos = new Fotografo[maxFotografos];
+        modelos = new Modelo[maxModelos];
+        eventos = new Evento[maxEventos];
+
+        numFotografos = 0;
+        numModelos = 0;
+        numEventos = 0;
+    }
+
+    public void eliminarModelo(Modelo m) {
+        for (int i = 0; i < numModelos; i++) {
+            if (modelos[i] != null && modelos[i].equals(m)) {
+                for (int j = i; j < numModelos - 1; j++) {
+                    modelos[j] = modelos[j + 1];
+                }
+                modelos[numModelos - 1] = null;
+                numModelos--;
+                return;
+            }
+        }
+    }
+
+    public void agregarModelo(Modelo m) {
+        if (numModelos < modelos.length) {
+            modelos[numModelos] = m;
+            numModelos++;
+        }
+    }
+
+    public Modelo buscarModeloPorCodigo(int codigo) {
+        for (int i = 0; i < numModelos; i++) {
+            if (modelos[i] != null &&
+                    modelos[i].getCodigoModelo() == codigo) {
+                return modelos[i];
+            }
+        }
+        return null;
+    }
+
+    public void asignarModeloAEvento(Evento e, Modelo m) {
+        if (e != null && m != null) {
+            e.agregarModelo(m);
+        }
+    }
+
+    public void agregarFotografo(Fotografo f) {
+        if (numFotografos < fotografos.length) {
+            fotografos[numFotografos] = f;
+            numFotografos++;
+        }
+    }
+
+    public void eliminarFotografo(Fotografo f) {
+        for (int i = 0; i < numFotografos; i++) {
+            if (fotografos[i] != null && fotografos[i].equals(f)) {
+                for (int j = i; j < numFotografos - 1; j++) {
+                    fotografos[j] = fotografos[j + 1];
+                }
+                fotografos[numFotografos - 1] = null;
+                numFotografos--;
+                return;
+            }
+        }
+    }
+
+    public Fotografo buscarFotografoPorCodigo(int codigo) {
+        for (int i = 0; i < numFotografos; i++) {
+            if (fotografos[i] != null &&
+                    fotografos[i].getCodigoFotografo() == codigo) {
+                return fotografos[i];
+            }
+        }
+        return null;
+    }
+
+    public void agregarEventos(Evento e) {
+        if (numEventos < eventos.length) {
+            eventos[numEventos] = e;
+            numEventos++;
+        }
+    }
+
+    public void eliminarEvento(Evento e) {
+        for (int i = 0; i < numEventos; i++) {
+            if (eventos[i] != null && eventos[i].equals(e)) {
+                for (int j = i; j < numEventos - 1; j++) {
+                    eventos[j] = eventos[j + 1];
+                }
+                eventos[numEventos - 1] = null;
+                numEventos--;
+                return;
+            }
+        }
+    }
+
+    public Evento buscarEventoPorNombre(String nombre) {
+        for (int i = 0; i < numEventos; i++) {
+            if (eventos[i] != null &&
+                    eventos[i].getNombreDeEvento().equalsIgnoreCase(nombre)) {
+                return eventos[i];
+            }
+        }
+        return null;
+    }
+
+    public void asignarEvento() {
+        // Falta
+    }
+
+    public void cargar() {
+        // Falta
+    }
+
+    public void guardar() {
+        // Falta
+    }
+
+    public void generarReporte() {
+        System.out.println("REPORTE AGENCIA");
+        System.out.println("Modelos: " + numModelos);
+        System.out.println("Fotografos: " + numFotografos);
+        System.out.println("Eventos: " + numEventos);
+    }
+}
