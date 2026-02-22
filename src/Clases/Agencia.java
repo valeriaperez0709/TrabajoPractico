@@ -78,11 +78,20 @@ public class Agencia implements Serializable {
         e.agregarModelo(m);
     }
 
-    public void agregarFotografo(Fotografo f) {
-        if (numFotografos < fotografos.length) {
-            fotografos[numFotografos] = f;
-            numFotografos++;
+    public void agregarFotografo(Fotografo f) throws DatoInvalido, Duplicado, CapacidadMaxima {
+        if (f == null) {
+            throw new DatoInvalido("El fotografo no puede ser null");
         }
+
+        if (buscarModeloPorCodigo(f.getCodigoFotografo()) != null) {
+            throw new Duplicado("Ya existe un fotografo con ese código");
+        }
+
+        if (numModelos >= modelos.length) {
+            throw new CapacidadMaxima("No hay espacio para más fotografos");
+        }
+            numFotografos++;
+
     }
 
     public void eliminarFotografo(Fotografo f) {
