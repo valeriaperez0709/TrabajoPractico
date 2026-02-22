@@ -64,10 +64,18 @@ public class Agencia implements Serializable {
         return null;
     }
 
-    public void asignarModeloAEvento(Evento e, Modelo m) {
-        if (e != null && m != null) {
-            e.agregarModelo(m);
+    public void asignarModeloAEvento(Evento e, Modelo m)
+            throws DatoInvalido, ValorInexistente {
+
+        if (e == null || m == null) {
+            throw new DatoInvalido("Evento o modelo inválido");
         }
+
+        if (buscarModeloPorCodigo(m.getCodigoModelo()) == null) {
+            throw new ValorInexistente("El modelo no pertenece a la agencia");
+        }
+
+        e.agregarModelo(m);
     }
 
     public void agregarFotografo(Fotografo f) {
