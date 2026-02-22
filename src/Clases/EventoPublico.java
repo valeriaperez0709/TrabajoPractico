@@ -25,7 +25,10 @@ public class EventoPublico extends Evento {
         this.numPatrocinadores = 0;
     }
 
-    public float calcularIngresos(int boletosVendidos) {
+    public float calcularIngresos(int boletosVendidos) throws DatoInvalido {
+        if(boletosVendidos<0){
+            throw new DatoInvalido("Los boletos vendidos no pueden ser negativos");
+        }
         return boletosVendidos * precioEntrada;
     }
 
