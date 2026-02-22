@@ -94,9 +94,12 @@ public class Agencia implements Serializable {
 
     }
 
-    public void eliminarFotografo(Fotografo f) {
+    public void eliminarFotografo(Fotografo f) throws ValorInexistente, DatoInvalido {
+        if (f == null) {
+            throw new DatoInvalido("El fotografo no puede ser null");
+        }
         for (int i = 0; i < numFotografos; i++) {
-            if (fotografos[i] != null && fotografos[i].equals(f)) {
+            if (fotografos[i].equals(f)) {
                 for (int j = i; j < numFotografos - 1; j++) {
                     fotografos[j] = fotografos[j + 1];
                 }
@@ -105,6 +108,7 @@ public class Agencia implements Serializable {
                 return;
             }
         }
+        throw new ValorInexistente("Fotografo no encontrado");
     }
 
     public Fotografo buscarFotografoPorCodigo(int codigo) {
@@ -135,6 +139,7 @@ public class Agencia implements Serializable {
                 return;
             }
         }
+
     }
 
     public Evento buscarEventoPorNombre(String nombre) {
