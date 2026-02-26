@@ -44,10 +44,12 @@ public class EventoPublico extends Evento {
         }
     }
 
-    public void eliminarPatrocinador(Patrocinador p) {
+    public void eliminarPatrocinador(Patrocinador p)  throws ValorInexistente, DatoInvalido {
+        if (p == null) {
+            throw new DatoInvalido("El patrocinador no puede ser null");
+        }
         for (int i = 0; i < numPatrocinadores; i++) {
-            if (patrocinadores[i] != null &&
-                    patrocinadores[i].equals(p)) {
+            if (patrocinadores[i].equals(p)) {
 
                 for (int j = i; j < numPatrocinadores - 1; j++) {
                     patrocinadores[j] = patrocinadores[j + 1];
@@ -58,6 +60,7 @@ public class EventoPublico extends Evento {
                 return;
             }
         }
+        throw new ValorInexistente("Patrocinador no encontrado");
     }
 
     public Patrocinador buscarPatrocinador() {
