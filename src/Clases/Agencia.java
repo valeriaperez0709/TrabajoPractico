@@ -111,6 +111,11 @@ public class Agencia implements Serializable {
         throw new ValorInexistente("Fotografo no encontrado");
 
     }
+    public void listarFotografos(){
+        for (int i = 0; i < numFotografos; i++) {
+            System.out.println(fotografos[i]);
+        }
+    }
 
     public Fotografo buscarFotografoPorCodigo(int codigo) {
         for (int i = 0; i < numFotografos; i++) {
