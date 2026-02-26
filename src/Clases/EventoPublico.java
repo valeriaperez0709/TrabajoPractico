@@ -37,11 +37,20 @@ public class EventoPublico extends Evento {
         return "PUBLICO";
     }
 
-    public void agregarPatrocinador(Patrocinador p) {
-        if (numPatrocinadores < patrocinadores.length) {
-            patrocinadores[numPatrocinadores] = p;
-            numPatrocinadores++;
+    public void agregarPatrocinador(Patrocinador p)throws DatoInvalido, Duplicado, CapacidadMaxima  {
+        if (p == null) {
+            throw new DatoInvalido("El patrocinador no puede ser null");
         }
+
+        if (buscarPatrocinadorPorCodigo(p.getCodigoPatrocinador()) != null) {
+            throw new Duplicado("Ya existe un patrocinador con ese código");
+        }
+
+        if (numPatrocinadores >= patrocinadores.length) {
+            throw new CapacidadMaxima("No hay espacio para más patrocinadores");
+        }
+            numPatrocinadores++;
+
     }
 
     public void eliminarPatrocinador(Patrocinador p)  throws ValorInexistente, DatoInvalido {
@@ -63,9 +72,12 @@ public class EventoPublico extends Evento {
         throw new ValorInexistente("Patrocinador no encontrado");
     }
 
-    public Patrocinador buscarPatrocinador() {
-        if (numPatrocinadores > 0) {
-            return patrocinadores[0];
+    public Patrocinador buscarPatrocinadorPorCodigo(int codigo) {
+        for (int i = 0; i < numPatrocinadores; i++) {
+            if (patrocinadores[i] != null &&
+                    patrocinadores[i].getCodigoPatrocinador() == codigo) {
+                return patrocinadores[i];
+            }
         }
         return null;
     }
