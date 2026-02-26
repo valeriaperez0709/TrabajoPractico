@@ -163,6 +163,11 @@ public class Agencia implements Serializable {
         }
         return null;
     }
+    public void listarEventos(){
+        for (int i = 0; i < numEventos; i++) {
+            System.out.println(eventos[i]);
+        }
+    }
 
     public void asignarEvento() {
         // Falta
