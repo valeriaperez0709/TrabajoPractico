@@ -63,6 +63,11 @@ public class Agencia implements Serializable {
         }
         return null;
     }
+    public void listarModelos(){
+        for (int i = 0; i < numModelos; i++) {
+            System.out.println(modelos[i]);
+        }
+    }
 
     public void asignarModeloAEvento(Evento e, Modelo m)
             throws DatoInvalido, ValorInexistente {
