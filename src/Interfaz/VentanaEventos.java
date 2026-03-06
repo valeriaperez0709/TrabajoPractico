@@ -1,5 +1,6 @@
 package Interfaz;
 
+import Clases.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,15 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Clases.Agencia;
-import Clases.Evento;
-import Clases.EventoPublico;
-import Clases.EventoPrivado;
-import Clases.Lugar;
-import Clases.DatoInvalido;
-import Clases.Duplicado;
-import Clases.CapacidadMaxima;
-import Clases.ValorInexistente;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Calendar;
@@ -59,6 +52,8 @@ public class VentanaEventos {
         botonesAccion.setAlignment(Pos.CENTER);
         Button btnAgregar = new Button("Agregar Evento");
         Button btnEliminar = new Button("Eliminar Evento");
+        Button btnAsignarModelo = new Button("Asignar Modelo");
+        Button btnAsignarFotografo = new Button("Asignar Fotógrafo");
         Button btnLimpiar = new Button("Limpiar");
 
         btnAgregar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
@@ -93,6 +88,8 @@ public class VentanaEventos {
         // ==================== ACCIONES DE BOTONES ====================
         btnAgregar.setOnAction(e -> agregarEvento());
         btnEliminar.setOnAction(e -> eliminarEvento());
+        btnAsignarModelo.setOnAction(e -> asignarModeloAEvento());
+        btnAsignarFotografo.setOnAction(e -> asignarFotografoAEvento());
         btnLimpiar.setOnAction(e -> limpiarFormulario());
 
         // Cargar eventos al abrir
@@ -342,5 +339,147 @@ public class VentanaEventos {
         alert.setTitle(titulo);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    private void asignarModeloAEvento() {
+        try {
+            TextField txtNombreEvento = (TextField) areaEventos.getScene().getRoot().lookup("#txtNombre");
+            String nombreEvento = txtNombreEvento.getText();
+
+            if (nombreEvento.isEmpty()) {
+                mostrarAlerta("Error", "Selecciona un evento primero");
+                return;
+            }
+
+            Evento evento = agencia.buscarEventoPorNombre(nombreEvento);
+            if (evento == null) {
+                mostrarAlerta("Error", "Evento no encontrado");
+                return;
+            }
+
+            // Crear ventana de selección de modelos
+            Stage stageSeleccion = new Stage();
+            stageSeleccion.setTitle("Seleccionar Modelo");
+            stageSeleccion.setWidth(400);
+            stageSeleccion.setHeight(300);
+
+            VBox vbox = new VBox(15);
+            vbox.setPadding(new Insets(15));
+
+            Label lbl = new Label("Selecciona un modelo disponible:");
+            ComboBox<String> cmbModelos = new ComboBox<>();
+
+            Modelo[] modelos = agencia.getModelos();
+            for (int i = 0; i < agencia.getNumModelos(); i++) {
+                if (modelos[i] != null && modelos[i].isDisponibilidad()) {
+                    cmbModelos.getItems().add(modelos[i].getNombre() + " (Código: " + modelos[i].getCodigoModelo() + ")");
+                }
+            }
+
+            Button btnSeleccionar = new Button("Asignar Modelo");
+            btnSeleccionar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
+            btnSeleccionar.setOnAction(e -> {
+                String modeloSeleccionado = cmbModelos.getValue();
+                if (modeloSeleccionado == null) {
+                    mostrarAlerta("Error", "Selecciona un modelo");
+                    return;
+                }
+
+                // Extraer código del modelo
+                int codigo = Integer.parseInt(modeloSeleccionado.split("Código: ")[1].replace(")", ""));
+                Modelo modelo = agencia.buscarModeloPorCodigo(codigo);
+
+                if (modelo != null) {
+                    try {
+                        agencia.asignarModeloAEvento(evento, modelo);
+                        agencia.guardar();
+                        mostrarAlerta("✅ Éxito", "Modelo asignado correctamente al evento");
+                        cargarEventos();
+                        stageSeleccion.close();
+                    } catch (DatoInvalido | ValorInexistente ex) {
+                        mostrarAlerta("Error", ex.getMessage());
+                    }
+                }
+            });
+
+            vbox.getChildren().addAll(lbl, cmbModelos, btnSeleccionar);
+            Scene scene = new Scene(vbox);
+            stageSeleccion.setScene(scene);
+            stageSeleccion.show();
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Ocurrió un error: " + e.getMessage());
+        }
+    }
+
+    private void asignarFotografoAEvento() {
+        try {
+            TextField txtNombreEvento = (TextField) areaEventos.getScene().getRoot().lookup("#txtNombre");
+            String nombreEvento = txtNombreEvento.getText();
+
+            if (nombreEvento.isEmpty()) {
+                mostrarAlerta("Error", "Selecciona un evento primero");
+                return;
+            }
+
+            Evento evento = agencia.buscarEventoPorNombre(nombreEvento);
+            if (evento == null) {
+                mostrarAlerta("Error", "Evento no encontrado");
+                return;
+            }
+
+            // Crear ventana de selección de fotógrafos
+            Stage stageSeleccion = new Stage();
+            stageSeleccion.setTitle("Seleccionar Fotógrafo");
+            stageSeleccion.setWidth(400);
+            stageSeleccion.setHeight(300);
+
+            VBox vbox = new VBox(15);
+            vbox.setPadding(new Insets(15));
+
+            Label lbl = new Label("Selecciona un fotógrafo:");
+            ComboBox<String> cmbFotografos = new ComboBox<>();
+
+            Fotografo[] fotografos = agencia.getFotografos();
+            for (int i = 0; i < agencia.getNumFotografos(); i++) {
+                if (fotografos[i] != null) {
+                    cmbFotografos.getItems().add(fotografos[i].getNombre() + " (Código: " + fotografos[i].getCodigoFotografo() + ")");
+                }
+            }
+
+            Button btnSeleccionar = new Button("Asignar Fotógrafo");
+            btnSeleccionar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
+            btnSeleccionar.setOnAction(e -> {
+                String fotografoSeleccionado = cmbFotografos.getValue();
+                if (fotografoSeleccionado == null) {
+                    mostrarAlerta("Error", "Selecciona un fotógrafo");
+                    return;
+                }
+
+                // Extraer código del fotógrafo
+                int codigo = Integer.parseInt(fotografoSeleccionado.split("Código: ")[1].replace(")", ""));
+                Fotografo fotografo = agencia.buscarFotografoPorCodigo(codigo);
+
+                if (fotografo != null) {
+                    try {
+                        agencia.asignarEvento(evento, fotografo);
+                        agencia.guardar();
+                        mostrarAlerta("✅ Éxito", "Fotógrafo asignado correctamente al evento");
+                        cargarEventos();
+                        stageSeleccion.close();
+                    } catch (DatoInvalido | ValorInexistente ex) {
+                        mostrarAlerta("Error", ex.getMessage());
+                    }
+                }
+            });
+
+            vbox.getChildren().addAll(lbl, cmbFotografos, btnSeleccionar);
+            Scene scene = new Scene(vbox);
+            stageSeleccion.setScene(scene);
+            stageSeleccion.show();
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Ocurrió un error: " + e.getMessage());
+        }
     }
 }
