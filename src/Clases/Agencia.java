@@ -7,24 +7,66 @@ public class Agencia implements Serializable {
     private Fotografo[] fotografos;
     private Modelo[] modelos;
     private Evento[] eventos;
+    private Lugar[] lugares;
     private int numFotografos;
     private int numEventos;
     private int numModelos;
+    private int numLugares;
 
     // Rutas de los archivos de persistencia
     private static final String ARCHIVO_MODELOS = "modelos.txt";
     private static final String ARCHIVO_FOTOGRAFOS = "fotografos.txt";
     private static final String ARCHIVO_EVENTOS = "eventos.txt";
+    private static final String ARCHIVO_LUGARES = "lugares.txt";
 
     public Agencia(int maxFotografos, int maxModelos, int maxEventos) {
         fotografos = new Fotografo[maxFotografos];
         modelos = new Modelo[maxModelos];
         eventos = new Evento[maxEventos];
+        lugares = new Lugar[50];
 
         numFotografos = 0;
         numModelos = 0;
         numEventos = 0;
+        numLugares = 0;
     }
+
+
+
+    public Lugar[] getLugares() { return lugares; }
+    public int getNumLugares() { return numLugares; }
+
+    public void agregarLugar(Lugar l) throws DatoInvalido, Duplicado, CapacidadMaxima {
+        if (l == null) {
+            throw new DatoInvalido("El lugar no puede ser null");
+        }
+        if (buscarLugarPorNombre(l.getNombreDelLugar()) != null) {
+            throw new Duplicado("Ya existe un lugar con ese nombre");
+        }
+        if (numLugares >= lugares.length) {
+            throw new CapacidadMaxima("No hay espacio para más lugares");
+        }
+        lugares[numLugares++] = l;
+    }
+
+    public void eliminarLugar(Lugar l) throws ValorInexistente, DatoInvalido {
+        if (l == null) {
+            throw new DatoInvalido("El lugar no puede ser null");
+        }
+        for (int i = 0; i < numLugares; i++) {
+            if (lugares[i].equals(l) || lugares[i].getNombreDelLugar().equalsIgnoreCase(l.getNombreDelLugar())) {
+                for (int j = i; j < numLugares - 1; j++) {
+                    lugares[j] = lugares[j + 1];
+                }
+                lugares[numLugares - 1] = null;
+                numLugares--;
+                return;
+            }
+        }
+        throw new ValorInexistente("Lugar no encontrado");
+    }
+
+
 
     // ===================== GETTERS =====================
 
@@ -174,6 +216,27 @@ public class Agencia implements Serializable {
         throw new ValorInexistente("Evento no encontrado");
     }
 
+    public Lugar buscarLugarPorNombre(String nombre) {
+        if (nombre == null || nombre.isEmpty()) {
+            return null;
+        }
+        for (int i = 0; i < numLugares; i++) {
+            if (lugares[i] != null &&
+                    lugares[i].getNombreDelLugar().equalsIgnoreCase(nombre)) {
+                return lugares[i];
+            }
+        }
+        return null;
+    }
+
+    public void listarLugares() {
+        for (int i = 0; i < numLugares; i++) {
+            if (lugares[i] != null) {
+                System.out.println(lugares[i]);
+            }
+        }
+    }
+
     public Evento buscarEventoPorNombre(String nombre) {
         for (int i = 0; i < numEventos; i++) {
             if (eventos[i] != null &&
@@ -212,6 +275,7 @@ public class Agencia implements Serializable {
         try {
             Persistencia.guardarModelos(modelos, numModelos, ARCHIVO_MODELOS);
             Persistencia.guardarFotografos(fotografos, numFotografos, ARCHIVO_FOTOGRAFOS);
+            Persistencia.guardarLugares(lugares, numLugares, ARCHIVO_LUGARES);
             System.out.println("Datos guardados exitosamente.");
         } catch (IOException e) {
             System.out.println("Error al guardar los datos: " + e.getMessage());
@@ -222,25 +286,16 @@ public class Agencia implements Serializable {
         try {
             numModelos = Persistencia.cargarModelos(modelos, ARCHIVO_MODELOS);
             numFotografos = Persistencia.cargarFotografos(fotografos, ARCHIVO_FOTOGRAFOS);
+            numLugares = Persistencia.cargarLugares(lugares, ARCHIVO_LUGARES);
             System.out.println("Datos cargados exitosamente.");
             System.out.println("Modelos cargados: " + numModelos);
             System.out.println("Fotografos cargados: " + numFotografos);
+            System.out.println("Lugares cargados: " + numLugares);
         } catch (IOException e) {
             System.out.println("Error al cargar los datos: " + e.getMessage());
         }
     }
 
-
-    //===========METODOS NECESARIOS PARA LA INTERFAZ======
-    public Lugar buscarLugarPorNombre(String nombre) {
-        // Por ahora, retorna null - luego implementarás un array de lugares
-        return null;
-    }
-
-    public Lugar[] getLugares() {
-        // Por ahora retorna un array vacío
-        return new Lugar[0];
-    }
 
     // ===================== REPORTE =====================
 
@@ -249,6 +304,7 @@ public class Agencia implements Serializable {
         System.out.println("Total Modelos: " + numModelos);
         System.out.println("Total Fotografos: " + numFotografos);
         System.out.println("Total Eventos: " + numEventos);
+        System.out.println("Total Lugares: " + numLugares);
         System.out.println();
 
         System.out.println("--- MODELOS ---");
@@ -261,6 +317,9 @@ public class Agencia implements Serializable {
 
         System.out.println("--- EVENTOS ---");
         listarEventos();
+
+        System.out.println("--- LUGARES ---");
+        listarLugares();
         System.out.println("=====================================");
     }
 }
