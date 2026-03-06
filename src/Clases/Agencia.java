@@ -19,6 +19,8 @@ public class Agencia implements Serializable {
     private static final String ARCHIVO_EVENTOS = "eventos.txt";
     private static final String ARCHIVO_LUGARES = "lugares.txt";
 
+    private static final float ESTATURA_MINIMA = 1.50f;
+
     public Agencia(int maxFotografos, int maxModelos, int maxEventos) {
         fotografos = new Fotografo[maxFotografos];
         modelos = new Modelo[maxModelos];
@@ -30,7 +32,6 @@ public class Agencia implements Serializable {
         numEventos = 0;
         numLugares = 0;
     }
-
 
 
     public Lugar[] getLugares() { return lugares; }
@@ -76,6 +77,7 @@ public class Agencia implements Serializable {
     public int getNumFotografos() { return numFotografos; }
     public int getNumModelos() { return numModelos; }
     public int getNumEventos() { return numEventos; }
+    public static float getEstaturaMinima() { return ESTATURA_MINIMA; }
 
     // ===================== MODELOS =====================
 
@@ -99,6 +101,9 @@ public class Agencia implements Serializable {
     public void agregarModelo(Modelo m) throws DatoInvalido, Duplicado, CapacidadMaxima {
         if (m == null) {
             throw new DatoInvalido("El modelo no puede ser null");
+        }
+        if (m.getEstatura() < ESTATURA_MINIMA) {
+            throw new DatoInvalido("La estatura mínima permitida es " + ESTATURA_MINIMA + "m. El modelo mide " + m.getEstatura() + "m");
         }
         if (buscarModeloPorCodigo(m.getCodigoModelo()) != null) {
             throw new Duplicado("Ya existe un modelo con ese código");
