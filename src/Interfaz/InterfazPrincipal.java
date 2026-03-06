@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import Clases.Agencia;
+import Interfaz.VentanaDashboard;
 
 public class InterfazPrincipal extends Application {
 
@@ -105,6 +106,7 @@ public class InterfazPrincipal extends Application {
         Button btnFotografos = crearBoton("Gestión de Fotógrafos", "#3498db");
         Button btnLugares = crearBoton("Gestión de Lugares", "#2ecc71");
         Button btnEventos = crearBoton("Gestión de Eventos", "#f39c12");
+        Button btnDashboard = crearBoton("Dashboard", "#9b59b6");
         Button btnSalir = crearBoton("Salir", "#95a5a6");
 
         // Acciones
@@ -112,6 +114,7 @@ public class InterfazPrincipal extends Application {
         btnFotografos.setOnAction(e -> new VentanaFotografos(agencia).mostrar());
         btnLugares.setOnAction(e -> new VentanaLugares(agencia).mostrar());
         btnEventos.setOnAction(e -> new VentanaEventos(agencia).mostrar());
+        btnDashboard.setOnAction(e -> new VentanaDashboard(agencia).mostrar());
         btnSalir.setOnAction(e -> {
             agencia.guardar();
             primaryStage.close();
