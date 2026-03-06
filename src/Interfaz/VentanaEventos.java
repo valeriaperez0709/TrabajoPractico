@@ -198,12 +198,17 @@ public class VentanaEventos {
     private void cargarLugaresEnCombo(ComboBox<String> cmb) {
         cmb.getItems().clear();
         Lugar[] lugares = agencia.getLugares();
-        if (lugares == null || lugares.length == 0) {
+        int numLugares = agencia.getNumLugares();
+
+        if (numLugares == 0) {
             cmb.getItems().add("No hay lugares disponibles");
             return;
         }
-        for (int i = 0; i < lugares.length && lugares[i] != null; i++) {
-            cmb.getItems().add(lugares[i].getNombreDelLugar());
+
+        for (int i = 0; i < numLugares; i++) {
+            if (lugares[i] != null) {
+                cmb.getItems().add(lugares[i].getNombreDelLugar());
+            }
         }
     }
 

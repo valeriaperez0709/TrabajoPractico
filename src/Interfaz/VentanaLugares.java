@@ -9,6 +9,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import Clases.Agencia;
 import Clases.Lugar;
+import Clases.DatoInvalido;
+import Clases.Duplicado;
+import Clases.CapacidadMaxima;
+import Clases.ValorInexistente;
 
 public class VentanaLugares {
     private Agencia agencia;
