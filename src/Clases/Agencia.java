@@ -230,6 +230,18 @@ public class Agencia implements Serializable {
         }
     }
 
+
+    //===========METODOS NECESARIOS PARA LA INTERFAZ======
+    public Lugar buscarLugarPorNombre(String nombre) {
+        // Por ahora, retorna null - luego implementarás un array de lugares
+        return null;
+    }
+
+    public Lugar[] getLugares() {
+        // Por ahora retorna un array vacío
+        return new Lugar[0];
+    }
+
     // ===================== REPORTE =====================
 
     public void generarReporte() {
