@@ -186,6 +186,14 @@ public class VentanaModelos {
                 return;
             }
 
+            if (estatura < Agencia.getEstaturaMinima()) {
+                mostrarAlerta("❌ NO MÁS ENANOS POR FAVOR ❌",
+                        "La estatura mínima permitida es " + Agencia.getEstaturaMinima() + "m\n" +
+                                "El modelo mide " + estatura + "m\n\n" +
+                                "Lo sentimos, este modelo no puede ser registrado en la agencia.");
+                return;
+            }
+
             Modelo modelo = new Modelo(nombre, identificacion, numero, codigoModelo, estatura, categoria, disponibilidad);
             agencia.agregarModelo(modelo);
             agencia.guardar();
