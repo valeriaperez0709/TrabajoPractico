@@ -131,7 +131,7 @@ public class Agencia implements Serializable {
     }
 
     public void asignarModeloAEvento(Evento e, Modelo m)
-            throws DatoInvalido, ValorInexistente {
+            throws DatoInvalido, ValorInexistente, CapacidadMaxima {
         if (e == null || m == null) {
             throw new DatoInvalido("Evento o modelo inválido");
         }
