@@ -25,13 +25,14 @@ import java.util.Scanner;
                 System.out.println("2. Agregar fotografo");
                 System.out.println("3. Agregar lugar");
                 System.out.println("4. Crear evento");
-                System.out.println(("5. Asisgnar Modelo a Evento"));
-                System.out.println("6. Listar modelos");
-                System.out.println("7. Listar fotografos");
-                System.out.println("8. Listar lugares");
-                System.out.println("9. Listar eventos");
-                System.out.println("10. Generar reporte");
-                System.out.println("11. Guardar datos");
+                System.out.println("5. Asisgnar Modelo a Evento");
+                System.out.println("6. Asisgnar Fotografo a Evento");
+                System.out.println("7. Listar modelos");
+                System.out.println("8. Listar fotografos");
+                System.out.println("9. Listar lugares");
+                System.out.println("10. Listar eventos");
+                System.out.println("11. Generar reporte");
+                System.out.println("12. Guardar datos");
                 System.out.println("0. Salir");
 
                 System.out.print("Opcion: ");
@@ -229,26 +230,53 @@ import java.util.Scanner;
                             break;
 
                         case 6:
-                            agencia.listarModelos();
+                            System.out.print("Nombre del evento: ");
+                            nombreEv = sc.nextLine();
+
+                            evento = agencia.buscarEventoPorNombre(nombreEv);
+
+                            if(evento == null){
+                                System.out.println("El evento no existe.");
+                                break;
+                            }
+
+                            System.out.print("Codigo del modelo: ");
+                            int codFotografo = sc.nextInt();
+                            sc.nextLine();
+
+                            Fotografo fotografo = agencia.buscarFotografoPorCodigo(codFotografo);
+
+                            if(fotografo == null){
+                                System.out.println("El fotografo no existe en la agencia.");
+                                break;
+                            }
+
+                            agencia.asignarFotografoAEvento(evento, fotografo);
+
+                            System.out.println("Fotografo asignado al evento correctamente.");
                             break;
 
                         case 7:
-                            agencia.listarFotografos();
+                            agencia.listarModelos();
                             break;
 
                         case 8:
-                            agencia.listarLugares();
+                            agencia.listarFotografos();
                             break;
 
                         case 9:
-                            agencia.listarEventos();
+                            agencia.listarLugares();
                             break;
 
                         case 10:
-                            agencia.generarReporte();
+                            agencia.listarEventos();
                             break;
 
                         case 11:
+                            agencia.generarReporte();
+                            break;
+
+                        case 12:
                             agencia.guardar();
                             break;
 
