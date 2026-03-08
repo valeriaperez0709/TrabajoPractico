@@ -260,18 +260,15 @@ public class Agencia implements Serializable {
 
     // ===================== ASIGNAR EVENTO =====================
 
-    public void asignarEvento(Evento e, Fotografo f) throws DatoInvalido, ValorInexistente {
+    public void asignarFotografoAEvento(Evento e, Fotografo f)
+            throws DatoInvalido, ValorInexistente, CapacidadMaxima {
         if (e == null || f == null) {
-            throw new DatoInvalido("Evento o fotógrafo inválido");
+            throw new DatoInvalido("Evento o fotografo inválido");
         }
         if (buscarFotografoPorCodigo(f.getCodigoFotografo()) == null) {
-            throw new ValorInexistente("El fotógrafo no pertenece a la agencia");
+            throw new ValorInexistente("El fotografo no pertenece a la agencia");
         }
-        if (buscarEventoPorNombre(e.getNombreDeEvento()) == null) {
-            throw new ValorInexistente("El evento no pertenece a la agencia");
-        }
-        e.setFotografo(f);
-        System.out.println("Fotógrafo " + f.getNombre() + " asignado al evento " + e.getNombreDeEvento());
+        e.agregarFotografo(f);
     }
 
     // ===================== PERSISTENCIA =====================
