@@ -29,11 +29,12 @@ public abstract class Evento implements Serializable {
 
     public void setFotografo(Fotografo fotografo) { this.fotografo = fotografo; }
 
-    public boolean agregarModelo(Modelo m) {
-        if (numModelos >= modelos.length) return false;
-        modelos[numModelos] = m;
-        numModelos++;
-        return true;
+    public void agregarModelo(Modelo m) throws CapacidadMaxima {
+        if (numModelos >= modelos.length) {
+            throw new CapacidadMaxima("El evento ya tiene el máximo de modelos");
+        }
+
+        modelos[numModelos++] = m;
     }
 
     public void mostrarDetalles() {
