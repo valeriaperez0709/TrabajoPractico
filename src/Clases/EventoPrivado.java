@@ -10,7 +10,7 @@ public class EventoPrivado extends Evento {
 
     public EventoPrivado(String nombreDeEvento, Date fecha, Lugar lugar, int maxModelos,
                          String cliente, int nivelConfidencialidad, float presupuesto) {
-        super(nombreDeEvento, fecha, lugar, maxModelos);
+        super(nombreDeEvento, fecha, lugar, maxModelos, 5);
         this.cliente = cliente;
         this.nivelConfidencialidad = nivelConfidencialidad;
         this.presupuesto = presupuesto;
@@ -25,7 +25,6 @@ public class EventoPrivado extends Evento {
     public void setPresupuesto(float presupuesto) { this.presupuesto = presupuesto; }
 
     public boolean verificarAcceso() {
-        // UML no define regla. Ejemplo simple:
         return nivelConfidencialidad <= 3;
     }
 

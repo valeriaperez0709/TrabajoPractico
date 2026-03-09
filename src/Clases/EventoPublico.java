@@ -17,7 +17,7 @@ public class EventoPublico extends Evento {
                          float precioEntrada,
                          int maxPatrocinadores) {
 
-        super(nombreDeEvento, fecha, lugar, maxModelos);
+        super(nombreDeEvento, fecha, lugar, maxModelos, 5);
         this.capacidadAsistentes = capacidadAsistentes;
         this.precioEntrada = precioEntrada;
         this.patrocinadores = new Patrocinador[maxPatrocinadores];
@@ -51,7 +51,7 @@ public class EventoPublico extends Evento {
         if (numPatrocinadores >= patrocinadores.length) {
             throw new CapacidadMaxima("No hay espacio para más patrocinadores");
         }
-        patrocinadores[numPatrocinadores] = p;  // ← FIX: faltaba esta línea
+        patrocinadores[numPatrocinadores] = p;
         numPatrocinadores++;
     }
 
