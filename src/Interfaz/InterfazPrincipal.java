@@ -120,7 +120,7 @@ public class InterfazPrincipal extends Application {
             primaryStage.close();
         });
 
-        pie.getChildren().addAll(btnModelos, btnFotografos, btnLugares, btnEventos, btnSalir);
+        pie.getChildren().addAll(btnModelos, btnFotografos, btnLugares, btnEventos, btnDashboard, btnSalir);
         return pie;
     }
 
