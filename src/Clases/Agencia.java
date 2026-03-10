@@ -91,13 +91,22 @@ public class Agencia implements Serializable {
 
     public void asignarModeloAEvento(Evento e, Modelo m)
             throws DatoInvalido, ValorInexistente, CapacidadMaxima {
+
         if (e == null || m == null) {
             throw new DatoInvalido("Evento o modelo inválido");
         }
+
         if (buscarModeloPorCodigo(m.getCodigoModelo()) == null) {
             throw new ValorInexistente("El modelo no pertenece a la agencia");
         }
+
+        if(!m.isDisponibilidad()){
+            throw new DatoInvalido("El modelo no está disponible");
+        }
+
         e.agregarModelo(m);
+
+        m.aceptarEvento(e);
     }
 
     // ===================== FOTOGRAFOS =====================
