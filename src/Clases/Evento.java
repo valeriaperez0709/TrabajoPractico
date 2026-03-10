@@ -9,15 +9,18 @@ public abstract class Evento implements Serializable {
     protected Date fecha;
     protected Lugar lugar;
     protected Modelo[] modelos;
-    protected Fotografo fotografo;
+    protected Fotografo[] fotografos;
     protected int numModelos;
+    protected int numFotografos;
 
-    public Evento(String nombreDeEvento, Date fecha, Lugar lugar, int maxModelos) {
+    public Evento(String nombreDeEvento, Date fecha, Lugar lugar, int maxModelos, int maxFotografos) {
         this.nombreDeEvento = nombreDeEvento;
         this.fecha = fecha;
         this.lugar = lugar;
         this.modelos = new Modelo[maxModelos];
         this.numModelos = 0;
+        this.fotografos= new Fotografo[maxFotografos];
+        this.numFotografos= 0;
     }
 
     public String getNombreDeEvento() { return nombreDeEvento; }
@@ -25,15 +28,52 @@ public abstract class Evento implements Serializable {
     public Lugar getLugar() { return lugar; }
     public Modelo[] getModelos() { return modelos; }
     public int getNumModelos() { return numModelos; }
-    public Fotografo getFotografo() { return fotografo; }
+    public Fotografo[] getFotografos() { return fotografos; }
+    public int getNumFotografos() { return numFotografos; }
 
-    public void setFotografo(Fotografo fotografo) { this.fotografo = fotografo; }
+    public void setNombreDeEvento(String nombreDeEvento) {
+        this.nombreDeEvento = nombreDeEvento;
+    }
 
-    public boolean agregarModelo(Modelo m) {
-        if (numModelos >= modelos.length) return false;
-        modelos[numModelos] = m;
-        numModelos++;
-        return true;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public void setLugar(Lugar lugar) {
+        this.lugar = lugar;
+    }
+
+    public void setModelos(Modelo[] modelos) {
+
+        this.modelos = modelos;
+    }
+
+    public void setFotografos(Fotografo[] fotografos) {
+        this.fotografos = fotografos;
+    }
+
+    public void setNumModelos(int numModelos) {
+        this.numModelos = numModelos;
+    }
+
+    public void setNumFotografos(int numFotografos) {
+        this.numFotografos = numFotografos;
+    }
+
+
+    public void agregarModelo(Modelo m) throws CapacidadMaxima {
+        if (numModelos >= modelos.length) {
+            throw new CapacidadMaxima("El evento ya tiene el máximo de modelos");
+        }
+
+        modelos[numModelos++] = m;
+    }
+    public void agregarFotografo(Fotografo f) throws CapacidadMaxima {
+        if (numFotografos >= fotografos.length) {
+            throw new CapacidadMaxima("El evento ya tiene el máximo de fotografos");
+        }
+
+        fotografos[numFotografos++] = f;
     }
 
     public void mostrarDetalles() {
@@ -49,7 +89,7 @@ public abstract class Evento implements Serializable {
                 ", fecha=" + fecha +
                 ", lugar=" + (lugar != null ? lugar.getNombreDelLugar() : "null") +
                 ", numModelos=" + numModelos +
-                ", fotografo=" + (fotografo != null ? fotografo.getCodigoFotografo() : "null") +
+                ", numFotografos=" + numFotografos +
                 ", tipo='" + tipoEvento() + '\'' +
                 '}';
     }
