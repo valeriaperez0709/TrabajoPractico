@@ -1,5 +1,6 @@
 package Interfaz;
 
+import Clases.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,12 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Clases.Agencia;
-import Clases.Fotografo;
-import Clases.DatoInvalido;
-import Clases.Duplicado;
-import Clases.CapacidadMaxima;
-import Clases.ValorInexistente;
 
 public class VentanaFotografos {
     private Agencia agencia;
@@ -32,19 +27,16 @@ public class VentanaFotografos {
         root.setPadding(new Insets(15));
         root.setStyle("-fx-background-color: #f0f0f0;");
 
-        // ==================== TÍTULO ====================
-        Label titulo = new Label("Gestión de Fotógrafos");
+        Label titulo = new Label("📷 Gestión de Fotógrafos");
         titulo.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        // ==================== FORMULARIO ====================
         VBox formulario = crearFormulario();
 
-        // ==================== BOTONES DE ACCIÓN ====================
         HBox botonesAccion = new HBox(10);
         botonesAccion.setAlignment(Pos.CENTER);
-        Button btnAgregar = new Button("Agregar Fotógrafo");
-        Button btnEliminar = new Button("Eliminar Fotógrafo");
-        Button btnLimpiar = new Button("Limpiar");
+        Button btnAgregar = new Button("✅ Agregar Fotógrafo");
+        Button btnEliminar = new Button("❌ Eliminar Fotógrafo");
+        Button btnLimpiar = new Button("🗑️ Limpiar");
 
         btnAgregar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         btnEliminar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
@@ -52,34 +44,29 @@ public class VentanaFotografos {
 
         botonesAccion.getChildren().addAll(btnAgregar, btnEliminar, btnLimpiar);
 
-        // ==================== ÁREA DE VISUALIZACIÓN ====================
         areaFotografos = new TextArea();
         areaFotografos.setEditable(false);
         areaFotografos.setWrapText(true);
-        areaFotografos.setPrefRowCount(15);
+        areaFotografos.setPrefRowCount(12);
 
-        // ==================== BOTÓN CERRAR ====================
         Button btnCerrar = new Button("Cerrar Ventana");
         btnCerrar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         btnCerrar.setOnAction(e -> stage.close());
 
-        // ==================== LAYOUT PRINCIPAL ====================
         root.getChildren().addAll(
                 titulo,
                 new Separator(),
                 formulario,
                 botonesAccion,
-                new Label("Fotógrafos registrados:"),
+                new Label("📋 Fotógrafos registrados:"),
                 areaFotografos,
                 btnCerrar
         );
 
-        // ==================== ACCIONES DE BOTONES ====================
         btnAgregar.setOnAction(e -> agregarFotografo());
         btnEliminar.setOnAction(e -> eliminarFotografo());
         btnLimpiar.setOnAction(e -> limpiarFormulario());
 
-        // Cargar fotógrafos al abrir
         cargarFotografos();
 
         Scene scene = new Scene(root);
@@ -91,7 +78,6 @@ public class VentanaFotografos {
         VBox form = new VBox(10);
         form.setStyle("-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 15; -fx-background-color: white;");
 
-        // Nombre
         HBox hboxNombre = new HBox(10);
         Label lblNombre = new Label("Nombre:");
         lblNombre.setPrefWidth(100);
@@ -99,7 +85,6 @@ public class VentanaFotografos {
         txtNombre.setId("txtNombre");
         hboxNombre.getChildren().addAll(lblNombre, txtNombre);
 
-        // Identificación
         HBox hboxIdentificacion = new HBox(10);
         Label lblIdentificacion = new Label("Identificación:");
         lblIdentificacion.setPrefWidth(100);
@@ -107,7 +92,6 @@ public class VentanaFotografos {
         txtIdentificacion.setId("txtIdentificacion");
         hboxIdentificacion.getChildren().addAll(lblIdentificacion, txtIdentificacion);
 
-        // Número de contacto
         HBox hboxNumero = new HBox(10);
         Label lblNumero = new Label("Contacto:");
         lblNumero.setPrefWidth(100);
@@ -115,7 +99,6 @@ public class VentanaFotografos {
         txtNumero.setId("txtNumero");
         hboxNumero.getChildren().addAll(lblNumero, txtNumero);
 
-        // Código de fotógrafo
         HBox hboxCodigoFotografo = new HBox(10);
         Label lblCodigoFotografo = new Label("Código Fotógrafo:");
         lblCodigoFotografo.setPrefWidth(100);
@@ -123,7 +106,6 @@ public class VentanaFotografos {
         txtCodigoFotografo.setId("txtCodigoFotografo");
         hboxCodigoFotografo.getChildren().addAll(lblCodigoFotografo, txtCodigoFotografo);
 
-        // Especialidad
         HBox hboxEspecialidad = new HBox(10);
         Label lblEspecialidad = new Label("Especialidad:");
         lblEspecialidad.setPrefWidth(100);
@@ -132,7 +114,6 @@ public class VentanaFotografos {
         cmbEspecialidad.setId("cmbEspecialidad");
         hboxEspecialidad.getChildren().addAll(lblEspecialidad, cmbEspecialidad);
 
-        // Años de experiencia
         HBox hboxExperiencia = new HBox(10);
         Label lblExperiencia = new Label("Años Experiencia:");
         lblExperiencia.setPrefWidth(100);
@@ -140,7 +121,6 @@ public class VentanaFotografos {
         txtExperiencia.setId("txtExperiencia");
         hboxExperiencia.getChildren().addAll(lblExperiencia, txtExperiencia);
 
-        // Tarifa por evento
         HBox hboxTarifa = new HBox(10);
         Label lblTarifa = new Label("Tarifa por Evento:");
         lblTarifa.setPrefWidth(100);
@@ -176,8 +156,12 @@ public class VentanaFotografos {
             int numero = Integer.parseInt(txtNumero.getText());
             int codigoFotografo = Integer.parseInt(txtCodigoFotografo.getText());
             String especialidad = cmbEspecialidad.getValue();
-            float experiencia = Float.parseFloat(txtExperiencia.getText());
-            float tarifa = Float.parseFloat(txtTarifa.getText());
+
+            String experienciaStr = txtExperiencia.getText().replace(",", ".");
+            float experiencia = Float.parseFloat(experienciaStr);
+
+            String tarifaStr = txtTarifa.getText().replace(",", ".");
+            float tarifa = Float.parseFloat(tarifaStr);
 
             if (nombre.isEmpty() || especialidad == null) {
                 mostrarAlerta("Error", "Por favor completa todos los campos");
@@ -186,13 +170,13 @@ public class VentanaFotografos {
 
             Fotografo fotografo = new Fotografo(nombre, identificacion, numero, codigoFotografo, especialidad, experiencia, tarifa);
             agencia.agregarFotografo(fotografo);
-            agencia.guardar();
+            Persistencia.guardar(agencia);
 
-            mostrarAlerta("Éxito", "Fotógrafo agregado correctamente");
+            mostrarAlerta("✅ Éxito", "Fotógrafo agregado correctamente");
             limpiarFormulario();
             cargarFotografos();
         } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Verifica que los números sean válidos");
+            mostrarAlerta("Error", "Verifica que los números sean válidos\nPara decimales usa formato: 1.5 o 1,5");
         } catch (DatoInvalido | Duplicado | CapacidadMaxima e) {
             mostrarAlerta("Error", e.getMessage());
         }
@@ -210,9 +194,9 @@ public class VentanaFotografos {
             }
 
             agencia.eliminarFotografo(fotografo);
-            agencia.guardar();
+            Persistencia.guardar(agencia);
 
-            mostrarAlerta("Éxito", "Fotógrafo eliminado correctamente");
+            mostrarAlerta("✅ Éxito", "Fotógrafo eliminado correctamente");
             limpiarFormulario();
             cargarFotografos();
         } catch (NumberFormatException e) {

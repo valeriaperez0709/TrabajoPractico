@@ -1,5 +1,6 @@
 package Interfaz;
 
+import Clases.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,10 +15,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import Clases.Agencia;
-import Clases.Evento;
-import Clases.EventoPublico;
-import Clases.Modelo;
 
 public class VentanaDashboard {
     private Agencia agencia;
@@ -36,21 +33,17 @@ public class VentanaDashboard {
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color: #f0f0f0;");
 
-        // ==================== ENCABEZADO ====================
         Label titulo = new Label("📊 DASHBOARD - AGENCIA DE MODELAJE");
         titulo.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        // ==================== TARJETAS DE ESTADÍSTICAS ====================
         GridPane tarjetas = crearTarjetasEstadisticas();
 
-        // ==================== INFORMACIÓN DETALLADA ====================
         TextArea areaDetalles = new TextArea();
         areaDetalles.setEditable(false);
         areaDetalles.setWrapText(true);
         areaDetalles.setPrefRowCount(20);
         actualizarDetalles(areaDetalles);
 
-        // ==================== BOTÓN ACTUALIZAR ====================
         Button btnActualizar = new Button("🔄 Actualizar Datos");
         btnActualizar.setStyle("-fx-font-size: 12; -fx-padding: 10; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
         btnActualizar.setOnAction(e -> {
@@ -60,7 +53,6 @@ public class VentanaDashboard {
             actualizarDetalles(areaDetalles);
         });
 
-        // ==================== BOTÓN CERRAR ====================
         Button btnCerrar = new Button("Cerrar");
         btnCerrar.setStyle("-fx-font-size: 12; -fx-padding: 10;");
         btnCerrar.setOnAction(e -> stage.close());
@@ -69,7 +61,6 @@ public class VentanaDashboard {
         botonesBox.setAlignment(Pos.CENTER);
         botonesBox.getChildren().addAll(btnActualizar, btnCerrar);
 
-        // ==================== LAYOUT PRINCIPAL ====================
         root.getChildren().addAll(
                 titulo,
                 crearSeparador(),
@@ -90,35 +81,30 @@ public class VentanaDashboard {
         grid.setVgap(15);
         grid.setAlignment(Pos.CENTER);
 
-        // Tarjeta 1: Total de Modelos
         VBox tarjetaModelos = crearTarjeta(
                 "👥 MODELOS",
                 String.valueOf(agencia.getNumModelos()),
                 "#e74c3c"
         );
 
-        // Tarjeta 2: Total de Fotógrafos
         VBox tarjetaFotografos = crearTarjeta(
                 "📷 FOTÓGRAFOS",
                 String.valueOf(agencia.getNumFotografos()),
                 "#3498db"
         );
 
-        // Tarjeta 3: Total de Eventos
         VBox tarjetaEventos = crearTarjeta(
                 "🎬 EVENTOS",
                 String.valueOf(agencia.getNumEventos()),
                 "#2ecc71"
         );
 
-        // Tarjeta 4: Total de Lugares
         VBox tarjetaLugares = crearTarjeta(
                 "📍 LUGARES",
                 String.valueOf(agencia.getNumLugares()),
                 "#f39c12"
         );
 
-        // Tarjeta 5: Modelos disponibles
         int modelosDisponibles = contarModelosDisponibles();
         VBox tarjetaDisponibles = crearTarjeta(
                 "✅ MODELOS DISPONIBLES",
@@ -126,7 +112,6 @@ public class VentanaDashboard {
                 "#27ae60"
         );
 
-        // Tarjeta 6: Ingresos totales
         double ingresosTotales = calcularIngresosTotales();
         VBox tarjetaIngresos = crearTarjeta(
                 "💰 INGRESOS EVENTOS",
@@ -152,10 +137,8 @@ public class VentanaDashboard {
         tarjeta.setPrefWidth(200);
         tarjeta.setPrefHeight(120);
 
-        // Rectángulo de color
         Rectangle colorBar = new Rectangle(180, 5);
         colorBar.setFill(Color.web(color));
-        colorBar.setStyle("-fx-arc-width: 5; -fx-arc-height: 5;");
 
         Label lblTitulo = new Label(titulo);
         lblTitulo.setFont(Font.font("Arial", FontWeight.BOLD, 13));
@@ -178,6 +161,8 @@ public class VentanaDashboard {
         return linea;
     }
 
+
+
     private void actualizarDetalles(TextArea area) {
         StringBuilder sb = new StringBuilder();
 
@@ -185,43 +170,44 @@ public class VentanaDashboard {
         sb.append("║          REPORTE DETALLADO - AGENCIA DE MODELAJE              ║\n");
         sb.append("╚════════════════════════════════════════════════════════════════╝\n\n");
 
-        // MODELOS
         sb.append("📊 MODELOS REGISTRADOS: ").append(agencia.getNumModelos()).append("\n");
-        sb.append("────────────────────────────────────────────────────────────────\n");
+        sb.append("─────────────────────────────────────────────────────────────���──\n");
         Modelo[] modelos = agencia.getModelos();
         int modelosDisponibles = 0;
-        int modelosDespectivos = 0;
+        int modelosEnEventos = 0;
 
         for (int i = 0; i < agencia.getNumModelos(); i++) {
             if (modelos[i] != null) {
                 if (modelos[i].isDisponibilidad()) {
                     modelosDisponibles++;
                 } else {
-                    modelosDespectivos++;
+                    modelosEnEventos++;
                 }
                 sb.append("  • ").append(modelos[i].getNombre())
                         .append(" (").append(modelos[i].getEstatura()).append("m)")
-                        .append(" - Estado: ").append(modelos[i].isDisponibilidad() ? "✅ Disponible" : "❌ Ocupado")
+                        .append(" - Estado: ").append(modelos[i].isDisponibilidad() ? "✅ Disponible" : "❌ En evento")
                         .append("\n");
             }
         }
         sb.append("  → Disponibles: ").append(modelosDisponibles).append("\n");
-        sb.append("  → En eventos: ").append(modelosDespectivos).append("\n\n");
+        sb.append("  → En eventos: ").append(modelosEnEventos).append("\n\n");
 
-        // FOTÓGRAFOS
         sb.append("📷 FOTÓGRAFOS REGISTRADOS: ").append(agencia.getNumFotografos()).append("\n");
         sb.append("────────────────────────────────────────────────────────────────\n");
         for (int i = 0; i < agencia.getNumFotografos(); i++) {
             if (agencia.getFotografos()[i] != null) {
-                sb.append("  • ").append(agencia.getFotografos()[i].getNombre())
-                        .append(" (").append(agencia.getFotografos()[i].getEspecialidad()).append(")")
-                        .append(" - Tarifa: $").append(agencia.getFotografos()[i].getTarifaPorEvento())
+                Fotografo f = agencia.getFotografos()[i];
+                // ✅ USAR calcularTarifa()
+                double tarifa = f.calcularTarifa();
+                sb.append("  • ").append(f.getNombre())
+                        .append(" (").append(f.getEspecialidad()).append(")")
+                        .append(" - Tarifa: $").append(tarifa)
                         .append("\n");
             }
         }
+
         sb.append("\n");
 
-        // LUGARES
         sb.append("📍 LUGARES DISPONIBLES: ").append(agencia.getNumLugares()).append("\n");
         sb.append("────────────────────────────────────────────────────────────────\n");
         for (int i = 0; i < agencia.getNumLugares(); i++) {
@@ -234,12 +220,10 @@ public class VentanaDashboard {
         }
         sb.append("\n");
 
-        // EVENTOS
         sb.append("🎬 EVENTOS REGISTRADOS: ").append(agencia.getNumEventos()).append("\n");
         sb.append("────────────────────────────────────────────────────────────────\n");
         int eventosPublicos = 0;
         int eventosPrivados = 0;
-        double ingresosTotales = 0;
 
         for (int i = 0; i < agencia.getNumEventos(); i++) {
             Evento e = agencia.getEventos()[i];
@@ -262,15 +246,58 @@ public class VentanaDashboard {
         sb.append("  → Públicos: ").append(eventosPublicos).append("\n");
         sb.append("  → Privados: ").append(eventosPrivados).append("\n\n");
 
-        // INGRESOS
+        sb.append("🎬 EVENTOS REGISTRADOS: ").append(agencia.getNumEventos()).append("\n");
+        sb.append("────────────────────────────────────────────────────────────────\n");
+        for (int i = 0; i < agencia.getNumEventos(); i++) {
+            Evento e = agencia.getEventos()[i];
+            if (e != null) {
+                // ✅ USAR mostrarDetalles() (aunque imprime en consola)
+                e.mostrarDetalles();
+
+                if (e instanceof EventoPublico) {
+                    eventosPublicos++;
+                    EventoPublico ep = (EventoPublico) e;
+                    sb.append("  • 🌍 PÚBLICO: ").append(e.getNombreDeEvento())
+                            .append(" - Capacidad: ").append(ep.getCapacidadAsistentes())
+                            .append(" - Precio: $").append(ep.getPrecioEntrada())
+                            .append("\n");
+                } else {
+                    eventosPrivados++;
+                    sb.append("  • 🔒 PRIVADO: ").append(e.getNombreDeEvento())
+                            .append(" - ").append(e.getNumModelos()).append(" modelos")
+                            .append("\n");
+                }
+            }
+        }
+
         sb.append("💰 INGRESOS TOTALES\n");
         sb.append("────────────────────────────────────────────────────────────────\n");
-        ingresosTotales = calcularIngresosTotales();
-        sb.append("  Total estimado: $").append(String.format("%.2f", ingresosTotales)).append("\n\n");
 
-        // VALIDACIÓN ESTATURA MÍNIMA
+        double ingresosTotales = 0;
+        for (int i = 0; i < agencia.getNumEventos(); i++) {
+            Evento e = agencia.getEventos()[i];
+            if (e instanceof EventoPublico) {
+                EventoPublico ep = (EventoPublico) e;
+                try {
+                    int boletosVendidos = (int) (ep.getCapacidadAsistentes() * 0.7);
+                    float ingresosEvento = ep.calcularIngresos(boletosVendidos);
+                    ingresosTotales += ingresosEvento;
+
+                    sb.append("  • ").append(ep.getNombreDeEvento())
+                            .append(" - Boletos (70%): ").append(boletosVendidos)
+                            .append(" x $").append(ep.getPrecioEntrada())
+                            .append(" = $").append(String.format("%.2f", ingresosEvento))
+                            .append("\n");
+                } catch (DatoInvalido ex) {
+                    System.out.println("Error: " + ex.getMessage());
+                }
+            }
+        }
+        sb.append("  ════════════════════════════════════════\n");
+        sb.append("  TOTAL INGRESOS: $").append(String.format("%.2f", ingresosTotales)).append("\n\n");
+
         sb.append("🔍 VALIDACIÓN - ESTATURA MÍNIMA\n");
-        sb.append("──────────────────────���─────────────────────────────────────────\n");
+        sb.append("────────────────────────────────────────────────────────────────\n");
         sb.append("  Estatura mínima permitida: ").append(agencia.getEstaturaMinima()).append("m\n");
         sb.append("  ✅ Todos los modelos cumplen con la estatura mínima\n\n");
 
@@ -297,7 +324,6 @@ public class VentanaDashboard {
             Evento e = agencia.getEventos()[i];
             if (e instanceof EventoPublico) {
                 EventoPublico ep = (EventoPublico) e;
-                // Asumimos que cada evento llena un 70% de su capacidad
                 total += ep.getCapacidadAsistentes() * ep.getPrecioEntrada() * 0.7;
             }
         }

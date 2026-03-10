@@ -1,5 +1,6 @@
 package Interfaz;
 
+import Clases.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,12 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Clases.Agencia;
-import Clases.Lugar;
-import Clases.DatoInvalido;
-import Clases.Duplicado;
-import Clases.CapacidadMaxima;
-import Clases.ValorInexistente;
 
 public class VentanaLugares {
     private Agencia agencia;
@@ -32,19 +27,16 @@ public class VentanaLugares {
         root.setPadding(new Insets(15));
         root.setStyle("-fx-background-color: #f0f0f0;");
 
-        // ==================== TÍTULO ====================
-        Label titulo = new Label("Gestión de Lugares");
+        Label titulo = new Label("📍 Gestión de Lugares");
         titulo.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        // ==================== FORMULARIO ====================
         VBox formulario = crearFormulario();
 
-        // ==================== BOTONES DE ACCIÓN ====================
         HBox botonesAccion = new HBox(10);
         botonesAccion.setAlignment(Pos.CENTER);
-        Button btnAgregar = new Button("Agregar Lugar");
-        Button btnEliminar = new Button("Eliminar Lugar");
-        Button btnLimpiar = new Button("Limpiar");
+        Button btnAgregar = new Button("✅ Agregar Lugar");
+        Button btnEliminar = new Button("❌ Eliminar Lugar");
+        Button btnLimpiar = new Button("🗑️ Limpiar");
 
         btnAgregar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         btnEliminar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
@@ -52,34 +44,29 @@ public class VentanaLugares {
 
         botonesAccion.getChildren().addAll(btnAgregar, btnEliminar, btnLimpiar);
 
-        // ==================== ÁREA DE VISUALIZACIÓN ====================
         areaLugares = new TextArea();
         areaLugares.setEditable(false);
         areaLugares.setWrapText(true);
-        areaLugares.setPrefRowCount(15);
+        areaLugares.setPrefRowCount(12);
 
-        // ==================== BOTÓN CERRAR ====================
         Button btnCerrar = new Button("Cerrar Ventana");
         btnCerrar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         btnCerrar.setOnAction(e -> stage.close());
 
-        // ==================== LAYOUT PRINCIPAL ====================
         root.getChildren().addAll(
                 titulo,
                 new Separator(),
                 formulario,
                 botonesAccion,
-                new Label("Lugares registrados:"),
+                new Label("📋 Lugares registrados:"),
                 areaLugares,
                 btnCerrar
         );
 
-        // ==================== ACCIONES DE BOTONES ====================
         btnAgregar.setOnAction(e -> agregarLugar());
         btnEliminar.setOnAction(e -> eliminarLugar());
         btnLimpiar.setOnAction(e -> limpiarFormulario());
 
-        // Cargar lugares al abrir
         cargarLugares();
 
         Scene scene = new Scene(root);
@@ -91,7 +78,6 @@ public class VentanaLugares {
         VBox form = new VBox(10);
         form.setStyle("-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 15; -fx-background-color: white;");
 
-        // Nombre del lugar
         HBox hboxNombre = new HBox(10);
         Label lblNombre = new Label("Nombre:");
         lblNombre.setPrefWidth(100);
@@ -99,7 +85,6 @@ public class VentanaLugares {
         txtNombre.setId("txtNombre");
         hboxNombre.getChildren().addAll(lblNombre, txtNombre);
 
-        // Dirección
         HBox hboxDireccion = new HBox(10);
         Label lblDireccion = new Label("Dirección:");
         lblDireccion.setPrefWidth(100);
@@ -107,7 +92,6 @@ public class VentanaLugares {
         txtDireccion.setId("txtDireccion");
         hboxDireccion.getChildren().addAll(lblDireccion, txtDireccion);
 
-        // Ciudad
         HBox hboxCiudad = new HBox(10);
         Label lblCiudad = new Label("Ciudad:");
         lblCiudad.setPrefWidth(100);
@@ -115,7 +99,6 @@ public class VentanaLugares {
         txtCiudad.setId("txtCiudad");
         hboxCiudad.getChildren().addAll(lblCiudad, txtCiudad);
 
-        // Capacidad
         HBox hboxCapacidad = new HBox(10);
         Label lblCapacidad = new Label("Capacidad:");
         lblCapacidad.setPrefWidth(100);
@@ -123,7 +106,6 @@ public class VentanaLugares {
         txtCapacidad.setId("txtCapacidad");
         hboxCapacidad.getChildren().addAll(lblCapacidad, txtCapacidad);
 
-        // Tipo de lugar
         HBox hboxTipo = new HBox(10);
         Label lblTipo = new Label("Tipo de Lugar:");
         lblTipo.setPrefWidth(100);
@@ -164,7 +146,7 @@ public class VentanaLugares {
 
             Lugar lugar = new Lugar(nombre, direccion, ciudad, capacidad, tipo);
             agencia.agregarLugar(lugar);
-            agencia.guardar();
+            Persistencia.guardar(agencia);
 
             mostrarAlerta("✅ Éxito", "Lugar agregado correctamente");
             limpiarFormulario();
@@ -193,7 +175,7 @@ public class VentanaLugares {
             }
 
             agencia.eliminarLugar(lugar);
-            agencia.guardar();
+            Persistencia.guardar(agencia);
 
             mostrarAlerta("✅ Éxito", "Lugar eliminado correctamente");
             limpiarFormulario();
@@ -219,8 +201,8 @@ public class VentanaLugares {
 
     private void cargarLugares() {
         areaLugares.clear();
-        Lugar[] lugaresArray = agencia.getLugares();  // ← OBTENER DE AGENCIA
-        int numLugares = agencia.getNumLugares();  // ← OBTENER DE AGENCIA
+        Lugar[] lugaresArray = agencia.getLugares();
+        int numLugares = agencia.getNumLugares();
 
         if (numLugares == 0) {
             areaLugares.setText("No hay lugares registrados.");

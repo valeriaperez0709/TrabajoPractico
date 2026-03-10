@@ -1,5 +1,6 @@
 package Interfaz;
 
+import Clases.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,12 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Clases.Agencia;
-import Clases.Modelo;
-import Clases.DatoInvalido;
-import Clases.Duplicado;
-import Clases.CapacidadMaxima;
-import Clases.ValorInexistente;
 
 public class VentanaModelos {
     private Agencia agencia;
@@ -26,25 +21,22 @@ public class VentanaModelos {
         Stage stage = new Stage();
         stage.setTitle("Gestión de Modelos");
         stage.setWidth(800);
-        stage.setHeight(600);
+        stage.setHeight(650);
 
         VBox root = new VBox(15);
         root.setPadding(new Insets(15));
         root.setStyle("-fx-background-color: #f0f0f0;");
 
-        // ==================== TÍTULO ====================
-        Label titulo = new Label("Gestión de Modelos");
+        Label titulo = new Label("👥 Gestión de Modelos");
         titulo.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        // ==================== FORMULARIO ====================
         VBox formulario = crearFormulario();
 
-        // ==================== BOTONES DE ACCIÓN ====================
         HBox botonesAccion = new HBox(10);
         botonesAccion.setAlignment(Pos.CENTER);
-        Button btnAgregar = new Button("Agregar Modelo");
-        Button btnEliminar = new Button("Eliminar Modelo");
-        Button btnLimpiar = new Button("Limpiar");
+        Button btnAgregar = new Button("✅ Agregar Modelo");
+        Button btnEliminar = new Button("❌ Eliminar Modelo");
+        Button btnLimpiar = new Button("🗑️ Limpiar");
 
         btnAgregar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         btnEliminar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
@@ -52,34 +44,29 @@ public class VentanaModelos {
 
         botonesAccion.getChildren().addAll(btnAgregar, btnEliminar, btnLimpiar);
 
-        // ==================== ÁREA DE VISUALIZACIÓN ====================
         areaModelos = new TextArea();
         areaModelos.setEditable(false);
         areaModelos.setWrapText(true);
-        areaModelos.setPrefRowCount(15);
+        areaModelos.setPrefRowCount(12);
 
-        // ==================== BOTÓN CERRAR ====================
         Button btnCerrar = new Button("Cerrar Ventana");
         btnCerrar.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         btnCerrar.setOnAction(e -> stage.close());
 
-        // ==================== LAYOUT PRINCIPAL ====================
         root.getChildren().addAll(
                 titulo,
                 new Separator(),
                 formulario,
                 botonesAccion,
-                new Label("Modelos registrados:"),
+                new Label("📋 Modelos registrados:"),
                 areaModelos,
                 btnCerrar
         );
 
-        // ==================== ACCIONES DE BOTONES ====================
         btnAgregar.setOnAction(e -> agregarModelo());
         btnEliminar.setOnAction(e -> eliminarModelo());
         btnLimpiar.setOnAction(e -> limpiarFormulario());
 
-        // Cargar modelos al abrir
         cargarModelos();
 
         Scene scene = new Scene(root);
@@ -90,6 +77,22 @@ public class VentanaModelos {
     private VBox crearFormulario() {
         VBox form = new VBox(10);
         form.setStyle("-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 15; -fx-background-color: white;");
+
+        // Banner de estatura mínima
+        VBox bannerEstatura = new VBox(5);
+        bannerEstatura.setStyle("-fx-background-color: #e74c3c; -fx-padding: 10; -fx-border-radius: 5;");
+        bannerEstatura.setAlignment(Pos.CENTER);
+
+        Label lblBannerTitulo = new Label("⚠️ REQUISITO IMPORTANTE");
+        lblBannerTitulo.setStyle("-fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold;");
+
+        Label lblBannerTexto = new Label("Estatura Mínima Requerida: 1.50m");
+        lblBannerTexto.setStyle("-fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold;");
+
+        Label lblBannerSubtexto = new Label("No Más Enanos Por Favor - Política de la Agencia");
+        lblBannerSubtexto.setStyle("-fx-text-fill: #fff8dc; -fx-font-size: 10;");
+
+        bannerEstatura.getChildren().addAll(lblBannerTitulo, lblBannerTexto, lblBannerSubtexto);
 
         // Nombre
         HBox hboxNombre = new HBox(10);
@@ -107,7 +110,7 @@ public class VentanaModelos {
         txtIdentificacion.setId("txtIdentificacion");
         hboxIdentificacion.getChildren().addAll(lblIdentificacion, txtIdentificacion);
 
-        // Número de contacto
+        // Número
         HBox hboxNumero = new HBox(10);
         Label lblNumero = new Label("Contacto:");
         lblNumero.setPrefWidth(100);
@@ -115,7 +118,7 @@ public class VentanaModelos {
         txtNumero.setId("txtNumero");
         hboxNumero.getChildren().addAll(lblNumero, txtNumero);
 
-        // Código de modelo
+        // Código Modelo
         HBox hboxCodigoModelo = new HBox(10);
         Label lblCodigoModelo = new Label("Código Modelo:");
         lblCodigoModelo.setPrefWidth(100);
@@ -127,9 +130,13 @@ public class VentanaModelos {
         HBox hboxEstatura = new HBox(10);
         Label lblEstatura = new Label("Estatura (m):");
         lblEstatura.setPrefWidth(100);
+        lblEstatura.setStyle("-fx-font-weight: bold; -fx-text-fill: #e74c3c;");
         TextField txtEstatura = new TextField();
         txtEstatura.setId("txtEstatura");
-        hboxEstatura.getChildren().addAll(lblEstatura, txtEstatura);
+        txtEstatura.setStyle("-fx-border-color: #e74c3c; -fx-border-width: 2;");
+        Label lblNotaEstatura = new Label("✓ Mínimo: 1.50m");
+        lblNotaEstatura.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 11;");
+        hboxEstatura.getChildren().addAll(lblEstatura, txtEstatura, lblNotaEstatura);
 
         // Categoría
         HBox hboxCategoria = new HBox(10);
@@ -150,6 +157,8 @@ public class VentanaModelos {
         hboxDisponibilidad.getChildren().addAll(lblDisponibilidad, chkDisponibilidad);
 
         form.getChildren().addAll(
+                bannerEstatura,
+                new Separator(),
                 hboxNombre,
                 hboxIdentificacion,
                 hboxNumero,
@@ -164,7 +173,6 @@ public class VentanaModelos {
 
     private void agregarModelo() {
         try {
-            // Obtener valores del formulario
             TextField txtNombre = (TextField) areaModelos.getScene().getRoot().lookup("#txtNombre");
             TextField txtIdentificacion = (TextField) areaModelos.getScene().getRoot().lookup("#txtIdentificacion");
             TextField txtNumero = (TextField) areaModelos.getScene().getRoot().lookup("#txtNumero");
@@ -177,7 +185,10 @@ public class VentanaModelos {
             int identificacion = Integer.parseInt(txtIdentificacion.getText());
             int numero = Integer.parseInt(txtNumero.getText());
             int codigoModelo = Integer.parseInt(txtCodigoModelo.getText());
-            float estatura = Float.parseFloat(txtEstatura.getText());
+
+            String estaturaStr = txtEstatura.getText().replace(",", ".");
+            float estatura = Float.parseFloat(estaturaStr);
+
             String categoria = cmbCategoria.getValue();
             boolean disponibilidad = chkDisponibilidad.isSelected();
 
@@ -186,9 +197,9 @@ public class VentanaModelos {
                 return;
             }
 
-            if (estatura < Agencia.getEstaturaMinima()) {
+            if (estatura < agencia.getEstaturaMinima()) {
                 mostrarAlerta("❌ NO MÁS ENANOS POR FAVOR ❌",
-                        "La estatura mínima permitida es " + Agencia.getEstaturaMinima() + "m\n" +
+                        "La estatura mínima permitida es " + agencia.getEstaturaMinima() + "m\n" +
                                 "El modelo mide " + estatura + "m\n\n" +
                                 "Lo sentimos, este modelo no puede ser registrado en la agencia.");
                 return;
@@ -196,15 +207,15 @@ public class VentanaModelos {
 
             Modelo modelo = new Modelo(nombre, identificacion, numero, codigoModelo, estatura, categoria, disponibilidad);
             agencia.agregarModelo(modelo);
-            agencia.guardar();
+            Persistencia.guardar(agencia);
 
-            mostrarAlerta("Éxito", "Modelo agregado correctamente");
+            mostrarAlerta("✅ Éxito", "Modelo agregado correctamente");
             limpiarFormulario();
             cargarModelos();
         } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Verifica que los números sean válidos");
+            mostrarAlerta("Error", "Verifica que los números sean válidos\nPara estatura usa formato: 1.50 o 1,50");
         } catch (DatoInvalido | Duplicado | CapacidadMaxima e) {
-            mostrarAlerta("Error", e.getMessage());
+            mostrarAlerta("❌ Error", e.getMessage());
         }
     }
 
@@ -220,9 +231,9 @@ public class VentanaModelos {
             }
 
             agencia.eliminarModelo(modelo);
-            agencia.guardar();
+            Persistencia.guardar(agencia);
 
-            mostrarAlerta("Éxito", "Modelo eliminado correctamente");
+            mostrarAlerta("✅ Éxito", "Modelo eliminado correctamente");
             limpiarFormulario();
             cargarModelos();
         } catch (NumberFormatException e) {

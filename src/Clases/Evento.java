@@ -29,6 +29,7 @@ public abstract class Evento implements Serializable {
     public Modelo[] getModelos() { return modelos; }
     public int getNumModelos() { return numModelos; }
     public Fotografo[] getFotografos() { return fotografos; }
+    public int getNumFotografos() { return numFotografos; }
 
     public void setNombreDeEvento(String nombreDeEvento) {
         this.nombreDeEvento = nombreDeEvento;

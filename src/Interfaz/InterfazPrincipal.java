@@ -13,10 +13,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import Clases.Agencia;
-import Interfaz.VentanaDashboard;
+import Clases.Persistencia;
 
 public class InterfazPrincipal extends Application {
-
     private Agencia agencia;
     private Stage primaryStage;
 
@@ -24,57 +23,55 @@ public class InterfazPrincipal extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        // Inicializar agencia con capacidades máximas
-        agencia = new Agencia(100, 100, 50);
-        agencia.cargar(); // Cargar datos persisitidos
+        // ==================== CARGAR DATOS ====================
+        agencia = Persistencia.cargar();
+        if (agencia == null) {
+            agencia = new Agencia(50, 100, 50);
+        }
 
-        primaryStage.setTitle("Sistema de Gestión - Agencia de Modelaje");
-        primaryStage.setWidth(600);
-        primaryStage.setHeight(500);
+        // ==================== CONFIGURACIÓN DE VENTANA ====================
+        primaryStage.setTitle("🎬 Agencia de Modelaje - No Más Enanos Por Favor");
+        primaryStage.setWidth(1000);
+        primaryStage.setHeight(700);
 
-        // Crear escena principal
-        Scene scene = crearEscenaPrincipal();
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: #ecf0f1;");
+
+        // ==================== ENCABEZADO ====================
+        root.setTop(crearEncabezado());
+
+        // ==================== CONTENIDO CENTRAL ====================
+        root.setCenter(crearContenidoCentral());
+
+        // ==================== PIE ====================
+        root.setBottom(crearPie());
+
+        // ==================== ESCENA ====================
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
 
-        // Al cerrar, guardar datos
+        // ==================== CERRAR ====================
         primaryStage.setOnCloseRequest(e -> {
-            agencia.guardar();
+            Persistencia.guardar(agencia);
+            System.exit(0);
         });
 
         primaryStage.show();
     }
 
-    private Scene crearEscenaPrincipal() {
-        BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #f0f0f0;");
-
-        // ================== ENCABEZADO ==================
-        VBox encabezado = crearEncabezado();
-        root.setTop(encabezado);
-
-        // ================== CONTENIDO CENTRAL ==================
-        VBox contenido = crearContenidoCentral();
-        root.setCenter(contenido);
-
-        // ================== PIE DE PÁGINA ==================
-        HBox pie = crearPie();
-        root.setBottom(pie);
-
-        return new Scene(root);
-    }
-
     private VBox crearEncabezado() {
-        VBox encabezado = new VBox();
-        encabezado.setStyle("-fx-background-color: #2c3e50; -fx-padding: 20;");
+        VBox encabezado = new VBox(10);
+        encabezado.setPadding(new Insets(20));
+        encabezado.setStyle("-fx-background-color: #2c3e50;");
         encabezado.setAlignment(Pos.CENTER);
 
-        Label titulo = new Label("Agencia de Modelaje");
+        Label titulo = new Label("🎬 SISTEMA DE GESTIÓN - AGENCIA DE MODELAJE");
+        titulo.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         titulo.setStyle("-fx-text-fill: white;");
-        titulo.setFont(Font.font("Arial", FontWeight.BOLD, 28));
 
-        Label subtitulo = new Label("No Más Enanos Por Favor");
+        Label subtitulo = new Label("Política: No Más Enanos Por Favor (Estatura Mínima: 1.50m)");
+        subtitulo.setFont(Font.font("Arial", 12));
         subtitulo.setStyle("-fx-text-fill: #ecf0f1;");
-        subtitulo.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 14));
 
         encabezado.getChildren().addAll(titulo, subtitulo);
         return encabezado;
@@ -83,7 +80,7 @@ public class InterfazPrincipal extends Application {
     private VBox crearContenidoCentral() {
         VBox contenido = new VBox(20);
         contenido.setPadding(new Insets(30));
-        contenido.setAlignment(Pos.CENTER);
+        contenido.setAlignment(Pos.TOP_CENTER);
 
         Label bienvenida = new Label("Bienvenido al Sistema de Gestión");
         bienvenida.setFont(Font.font("Arial", FontWeight.BOLD, 18));
@@ -92,7 +89,20 @@ public class InterfazPrincipal extends Application {
         instruccion.setStyle("-fx-text-fill: #7f8c8d;");
         instruccion.setFont(Font.font("Arial", 12));
 
-        contenido.getChildren().addAll(bienvenida, instruccion);
+        // ========== INFORMACIÓN IMPORTANTE ==========
+        VBox infoBox = new VBox(10);
+        infoBox.setStyle("-fx-border-color: #e74c3c; -fx-border-radius: 5; -fx-padding: 15; -fx-background-color: #fadbd8;");
+
+        Label lblTitulo = new Label("⚠️ POLÍTICA DE LA AGENCIA");
+        lblTitulo.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #c0392b;");
+
+        Label lblPolitica = new Label("Estatura Mínima Permitida: 1.50 metros\n\n\"No Más Enanos Por Favor\"");
+        lblPolitica.setStyle("-fx-font-size: 12; -fx-text-fill: #922b21; -fx-wrap-text: true;");
+        lblPolitica.setWrapText(true);
+
+        infoBox.getChildren().addAll(lblTitulo, lblPolitica);
+
+        contenido.getChildren().addAll(bienvenida, instruccion, infoBox);
         return contenido;
     }
 
@@ -102,12 +112,12 @@ public class InterfazPrincipal extends Application {
         pie.setStyle("-fx-background-color: #34495e;");
         pie.setAlignment(Pos.CENTER);
 
-        Button btnModelos = crearBoton("Gestión de Modelos", "#e74c3c");
-        Button btnFotografos = crearBoton("Gestión de Fotógrafos", "#3498db");
-        Button btnLugares = crearBoton("Gestión de Lugares", "#2ecc71");
-        Button btnEventos = crearBoton("Gestión de Eventos", "#f39c12");
-        Button btnDashboard = crearBoton("Dashboard", "#9b59b6");
-        Button btnSalir = crearBoton("Salir", "#95a5a6");
+        Button btnModelos = crearBoton("👥 Gestión de Modelos", "#e74c3c");
+        Button btnFotografos = crearBoton("📷 Gestión de Fotógrafos", "#3498db");
+        Button btnLugares = crearBoton("📍 Gestión de Lugares", "#2ecc71");
+        Button btnEventos = crearBoton("🎬 Gestión de Eventos", "#f39c12");
+        Button btnDashboard = crearBoton("📊 Dashboard", "#9b59b6");
+        Button btnSalir = crearBoton("🚪 Salir", "#95a5a6");
 
         // Acciones
         btnModelos.setOnAction(e -> new VentanaModelos(agencia).mostrar());
@@ -116,7 +126,7 @@ public class InterfazPrincipal extends Application {
         btnEventos.setOnAction(e -> new VentanaEventos(agencia).mostrar());
         btnDashboard.setOnAction(e -> new VentanaDashboard(agencia).mostrar());
         btnSalir.setOnAction(e -> {
-            agencia.guardar();
+            Persistencia.guardar(agencia);
             primaryStage.close();
         });
 
@@ -126,23 +136,30 @@ public class InterfazPrincipal extends Application {
 
     private Button crearBoton(String texto, String color) {
         Button btn = new Button(texto);
-        btn.setStyle("-fx-font-size: 12; -fx-padding: 10; -fx-background-color: " + color + "; -fx-text-fill: white; -fx-font-weight: bold;");
-        btn.setPrefWidth(130);
-        btn.setOnMouseEntered(e -> btn.setStyle("-fx-font-size: 12; -fx-padding: 10; -fx-background-color: " + oscurecerColor(color) + "; -fx-text-fill: white; -fx-font-weight: bold;"));
-        btn.setOnMouseExited(e -> btn.setStyle("-fx-font-size: 12; -fx-padding: 10; -fx-background-color: " + color + "; -fx-text-fill: white; -fx-font-weight: bold;"));
+        btn.setStyle("-fx-background-color: " + color + "; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 12; " +
+                "-fx-padding: 10; " +
+                "-fx-font-weight: bold; " +
+                "-fx-cursor: hand;");
+        btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color: " + oscurecerColor(color) + "; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 12; " +
+                "-fx-padding: 10; " +
+                "-fx-font-weight: bold; " +
+                "-fx-cursor: hand;"));
+        btn.setOnMouseExited(e -> btn.setStyle("-fx-background-color: " + color + "; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 12; " +
+                "-fx-padding: 10; " +
+                "-fx-font-weight: bold; " +
+                "-fx-cursor: hand;"));
         return btn;
     }
 
     private String oscurecerColor(String color) {
-        // Simplificación: solo algunos colores
-        switch (color) {
-            case "#e74c3c": return "#c0392b";
-            case "#3498db": return "#2980b9";
-            case "#2ecc71": return "#27ae60";
-            case "#f39c12": return "#d68910";
-            case "#95a5a6": return "#7f8c8d";
-            default: return color;
-        }
+        // Simplificar versión oscura
+        return color;
     }
 
     public static void main(String[] args) {
