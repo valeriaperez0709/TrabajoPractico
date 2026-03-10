@@ -163,14 +163,16 @@ public class VentanaLugares {
             }
 
             Lugar lugar = new Lugar(nombre, direccion, ciudad, capacidad, tipo);
-            // Aquí podrías agregarlo a un array en agencia si implementas getLugares()
-            // Por ahora solo lo creamos
+            agencia.agregarLugar(lugar);
+            agencia.guardar();
 
-            mostrarAlerta("Éxito", "Lugar agregado correctamente");
+            mostrarAlerta("✅ Éxito", "Lugar agregado correctamente");
             limpiarFormulario();
             cargarLugares();
         } catch (NumberFormatException e) {
             mostrarAlerta("Error", "Verifica que los números sean válidos");
+        } catch (DatoInvalido | Duplicado | CapacidadMaxima e) {
+            mostrarAlerta("Error", e.getMessage());
         }
     }
 
@@ -184,11 +186,20 @@ public class VentanaLugares {
                 return;
             }
 
-            mostrarAlerta("Éxito", "Lugar eliminado correctamente");
+            Lugar lugar = agencia.buscarLugarPorNombre(nombre);
+            if (lugar == null) {
+                mostrarAlerta("Error", "Lugar no encontrado");
+                return;
+            }
+
+            agencia.eliminarLugar(lugar);
+            agencia.guardar();
+
+            mostrarAlerta("✅ Éxito", "Lugar eliminado correctamente");
             limpiarFormulario();
             cargarLugares();
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Ocurrió un error al eliminar");
+        } catch (ValorInexistente | DatoInvalido e) {
+            mostrarAlerta("Error", e.getMessage());
         }
     }
 
@@ -208,7 +219,21 @@ public class VentanaLugares {
 
     private void cargarLugares() {
         areaLugares.clear();
-        areaLugares.setText("Sistema de lugares (en desarrollo)");
+        Lugar[] lugaresArray = agencia.getLugares();  // ← OBTENER DE AGENCIA
+        int numLugares = agencia.getNumLugares();  // ← OBTENER DE AGENCIA
+
+        if (numLugares == 0) {
+            areaLugares.setText("No hay lugares registrados.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < numLugares; i++) {
+            if (lugaresArray[i] != null) {
+                sb.append(lugaresArray[i].toString()).append("\n\n");
+            }
+        }
+        areaLugares.setText(sb.toString());
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {
